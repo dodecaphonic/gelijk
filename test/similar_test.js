@@ -27,4 +27,9 @@ describe("the similarity between two words", () => {
     assert(!areSimilar("", "loneliness", 30));
     assert(!areSimilar("loneliness", "", 42));
   });
+
+  it("is checked with a default threshold of 3 if none is specified", () => {
+    assert(areSimilar("word", "code"));
+    assert(areSimilar("w", "word"));
+  });
 });
