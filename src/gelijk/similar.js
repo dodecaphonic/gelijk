@@ -1,9 +1,12 @@
+const { isEmpty } = require("ramda");
 const { levenshtein } = require("./levenshtein");
 
 module.exports = (wordA, wordB, threshold) => {
-  if (Math.abs(wordA.length - wordB.length) > threshold) {
+  if (wordA === wordB) {
+    return true;
+  } else if (isEmpty(wordA) || isEmpty(wordB)) {
     return false;
+  } else {
+    return levenshtein(wordA, wordB) <= threshold;
   }
-
-  return levenshtein(wordA, wordB) <= threshold;
 };
