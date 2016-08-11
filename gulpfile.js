@@ -10,7 +10,9 @@ gulp.task("default", ["build"]);
 
 gulp.task("test", () => (
   gulp.src("test/**/*.js")
-    .pipe(mocha())
+    .pipe(mocha({
+      timeout: 15000
+    }))
 ));
 
 gulp.task("watch-test", () => (

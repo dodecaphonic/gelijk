@@ -1,4 +1,4 @@
-const { dropLast, isEmpty, last, min } = require("ramda");
+const { dropLast, isEmpty, last, min, range } = require("ramda");
 
 // String -> String
 const exceptLastChar = dropLast(1);
@@ -17,7 +17,30 @@ const naiveLevenshtein = (wordA, wordB) => {
 };
 
 // String -> String -> Number
-const levenshtein = naiveLevenshtein;
+const levenshtein = (wordA, wordB) => {
+  if (wordA === wordB) return 0;
+  if (isEmpty(wordA)) return wordB.length;
+  if (isEmpty(wordB)) return wordA.length;
+
+  const distA = range(0, wordB.length + 1);
+  const distB = [];
+
+  for (let i = 0; i < wordA.length; i++) {
+    distB[0] = i + 1;
+
+    for (let j = 0; j < wordB.length; j++) {
+      const cost = wordA[i] === wordB[j] ? 0 : 1;
+      distB[j + 1] = min(distB[j] + 1,
+                         min(distA[j + 1] + 1, distA[j] + cost));
+    }
+
+    for (let j = 0; j < distA.length; j++) {
+      distA[j] = distB[j];
+    }
+  }
+
+  return distB[wordB.length];
+};
 
 module.exports = {
   naiveLevenshtein,
