@@ -1,9 +1,16 @@
 const { dropLast, isEmpty, last, min, range } = require("ramda");
 
-// String -> String
 const exceptLastChar = dropLast(1);
 
-// String -> String -> Number
+/**
+ * Determines the Levenshtein distance between two words
+ * recursively. This is implemented as a reference point for the more
+ * sophisticated version below.
+ *
+ * @param {string} wordA - the first word
+ * @param {string} wordB - the second word
+ * @return {number} the edit distance between both words
+ */
 const naiveLevenshtein = (wordA, wordB) => {
   if (wordA === wordB) return 0;
   if (isEmpty(wordA)) return wordB.length;
@@ -16,7 +23,15 @@ const naiveLevenshtein = (wordA, wordB) => {
                  naiveLevenshtein(exceptLastChar(wordA), exceptLastChar(wordB)) + cost));
 };
 
-// String -> String -> Number
+/**
+ * Determines the Levenshtein distance between two words using the
+ * fast, memory-efficient algorithm described by Sten Hjelmqvist
+ * (http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm).
+ *
+ * @param {string} wordA - the first word
+ * @param {string} wordB - the second word
+ * @return {number} the edit distance between both words
+ */
 const levenshtein = (wordA, wordB) => {
   if (wordA === wordB) return 0;
   if (isEmpty(wordA)) return wordB.length;
