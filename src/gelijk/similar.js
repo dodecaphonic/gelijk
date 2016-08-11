@@ -1,4 +1,5 @@
 const { isEmpty } = require("ramda");
+
 const { levenshtein } = require("./levenshtein");
 
 /**

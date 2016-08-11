@@ -1,5 +1,6 @@
 const assert = require("assert");
 const jsc = require("jsverify");
+
 const Lev = require("../src/gelijk/levenshtein");
 
 const suite = (distance) => {
