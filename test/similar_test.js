@@ -9,7 +9,7 @@ const shiftCharsByOne = map((c) => String.fromCharCode(c.charCodeAt(0) + 1));
 describe("the similarity between two words", () => {
   jsc.property("is inexistent if the size difference between them is larger than threshold",
                "nestring", "nestring",
-               (a, b) => !areSimilar(a, b, Math.abs(b.length - a.length) - 1));
+               (a, b) => !areSimilar(a, b, Math.abs(b.length - a.length) - 1) || a === b);
 
   jsc.property("is inexistent if the edit distance is larger than the threshold",
                "nestring",
