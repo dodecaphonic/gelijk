@@ -31,7 +31,7 @@ const allSimilar = R.curry((ref, words, threshold) => (
 const treeArbitrary = jsc.nearray(jsc.nestring)
         .smap(createTree, T.allWords);
 
-describe("A Burkhard-Teller Tree", () => {
+describe("A Burkhard-Keller Tree", () => {
   jsc.property("keeps every word that's inserted", treeArbitrary, "nearray nestring", (tree, words) => {
     const originalWords = T.allWords(tree);
     const updatedTree = R.reduce(T.addWord, tree, words);
