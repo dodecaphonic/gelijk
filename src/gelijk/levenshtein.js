@@ -1,4 +1,4 @@
-const { dropLast, isEmpty, last, min, range } = require("ramda");
+const { curry, dropLast, isEmpty, last, min, range } = require("ramda");
 
 const exceptLastChar = dropLast(1);
 
@@ -11,7 +11,7 @@ const exceptLastChar = dropLast(1);
  * @param {string} wordB - the second word
  * @return {number} the edit distance between both words
  */
-const naiveLevenshtein = (wordA, wordB) => {
+const naiveLevenshtein = curry((wordA, wordB) => {
   if (wordA === wordB) return 0;
   if (isEmpty(wordA)) return wordB.length;
   if (isEmpty(wordB)) return wordA.length;
@@ -21,7 +21,7 @@ const naiveLevenshtein = (wordA, wordB) => {
   return min(naiveLevenshtein(exceptLastChar(wordA), wordB) + 1,
              min(naiveLevenshtein(wordA, exceptLastChar(wordB)) + 1,
                  naiveLevenshtein(exceptLastChar(wordA), exceptLastChar(wordB)) + cost));
-};
+});
 
 /**
  * Determines the Levenshtein distance between two words using the
@@ -32,7 +32,7 @@ const naiveLevenshtein = (wordA, wordB) => {
  * @param {string} wordB - the second word
  * @return {number} the edit distance between both words
  */
-const levenshtein = (wordA, wordB) => {
+const levenshtein = curry((wordA, wordB) => {
   if (wordA === wordB) return 0;
   if (isEmpty(wordA)) return wordB.length;
   if (isEmpty(wordB)) return wordA.length;
@@ -55,7 +55,7 @@ const levenshtein = (wordA, wordB) => {
   }
 
   return distB[wordB.length];
-};
+});
 
 module.exports = {
   naiveLevenshtein,
