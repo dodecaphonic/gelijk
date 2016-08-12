@@ -1,5 +1,5 @@
 /**
- * A Burkhard-Teller tree is a data structure that allows for fast
+ * A Burkhard-Keller tree is a data structure that allows for fast
  * searching of proximate strings, using the edit distance between its
  * nodes as the branching criterion. A best-case search should take
  * O(lg n) time, but lower thresholds (that is, maximum edit
