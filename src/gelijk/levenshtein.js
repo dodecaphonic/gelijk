@@ -1,4 +1,4 @@
-const { curry, dropLast, isEmpty, last, min, range } = require("ramda");
+const { dropLast, last, range } = require("ramda");
 
 const exceptLastChar = dropLast(1);
 
@@ -11,17 +11,17 @@ const exceptLastChar = dropLast(1);
  * @param {string} wordB - the second word
  * @return {number} the edit distance between both words
  */
-const naiveLevenshtein = curry((wordA, wordB) => {
+const naiveLevenshtein = (wordA, wordB) => {
   if (wordA === wordB) return 0;
-  if (isEmpty(wordA)) return wordB.length;
-  if (isEmpty(wordB)) return wordA.length;
+  if (wordA === "") return wordB.length;
+  if (wordB === "") return wordA.length;
 
   const cost = last(wordA) === last(wordB) ? 0 : 1;
 
-  return min(naiveLevenshtein(exceptLastChar(wordA), wordB) + 1,
-             min(naiveLevenshtein(wordA, exceptLastChar(wordB)) + 1,
-                 naiveLevenshtein(exceptLastChar(wordA), exceptLastChar(wordB)) + cost));
-});
+  return Math.min(naiveLevenshtein(exceptLastChar(wordA), wordB) + 1,
+                  naiveLevenshtein(wordA, exceptLastChar(wordB)) + 1,
+                  naiveLevenshtein(exceptLastChar(wordA), exceptLastChar(wordB)) + cost);
+};
 
 /**
  * Determines the Levenshtein distance between two words using the
@@ -32,21 +32,24 @@ const naiveLevenshtein = curry((wordA, wordB) => {
  * @param {string} wordB - the second word
  * @return {number} the edit distance between both words
  */
-const levenshtein = curry((wordA, wordB) => {
+const levenshtein = (wordA, wordB) => {
   if (wordA === wordB) return 0;
-  if (isEmpty(wordA)) return wordB.length;
-  if (isEmpty(wordB)) return wordA.length;
+  if (wordA === "") return wordB.length;
+  if (wordB === "") return wordA.length;
 
-  const distA = range(0, wordB.length + 1);
+  const distA = [];
   const distB = [];
+
+  for (let i = 0; i <= wordB.length + 1; i++) {
+    distA[i] = i;
+  }
 
   for (let i = 0; i < wordA.length; i++) {
     distB[0] = i + 1;
 
     for (let j = 0; j < wordB.length; j++) {
       const cost = wordA[i] === wordB[j] ? 0 : 1;
-      distB[j + 1] = min(distB[j] + 1,
-                         min(distA[j + 1] + 1, distA[j] + cost));
+      distB[j + 1] = Math.min(distB[j] + 1, distA[j + 1] + 1, distA[j] + cost);
     }
 
     for (let j = 0; j < distA.length; j++) {
@@ -55,7 +58,7 @@ const levenshtein = curry((wordA, wordB) => {
   }
 
   return distB[wordB.length];
-});
+};
 
 module.exports = {
   naiveLevenshtein,

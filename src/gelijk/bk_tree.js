@@ -24,8 +24,6 @@ const R = require("ramda");
 const { levenshtein } = require("./levenshtein");
 
 
-const children_ = R.lensProp("children");
-
 /**
  * Creates a new BK Tree.
  *
@@ -56,11 +54,14 @@ const addWord = (root, word) => {
       return node;
     }
 
-    if (R.has(dist, node.children)) {
+    if (node.children[dist] != null) {
       const child = node.children[dist];
-      const updated = R.merge(node.children, { [dist]: go(child) });
 
-      return R.set(children_, updated, node);
+      return Object.assign({}, node, {
+        children: Object.assign({}, node.children, {
+          [dist]: go(child)
+        })
+      });
     } else {
       return addChild(node, normalizedWord, dist);
     }
@@ -70,9 +71,9 @@ const addWord = (root, word) => {
 };
 
 const addChild = (node, word, dist) => (
-  R.set(children_,
-        R.merge({ [dist]: createTree(word) }, node.children),
-        node)
+  Object.assign({}, node, {
+    children: Object.assign({}, node.children, { [dist]: createTree(word) })
+  })
 );
 
 /**
@@ -94,8 +95,6 @@ const allWords = (root) => {
   return buildList([], root);
 };
 
-const second = R.view(R.lensIndex(1));
-
 /**
  * Searches for words matching a reference word, with the expectation
  * that they are at most _threshold_ edits away from it.
@@ -105,7 +104,7 @@ const second = R.view(R.lensIndex(1));
  * @param {string} word - the word one is searching for
  * @return {Array.<string>} all words matching the criteria
  */
-const searchWords = R.curry((tree, threshold, word) => {
+const searchWords = (tree, threshold, word) => {
   const normalizedWord = word.toLowerCase();
   const found = [];
 
@@ -129,7 +128,7 @@ const searchWords = R.curry((tree, threshold, word) => {
   reducer(tree);
 
   return found;
-});
+};
 
 const isLeaf = (node) => R.isEmpty(node.children);
 
