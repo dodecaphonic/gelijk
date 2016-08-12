@@ -19,7 +19,7 @@
  * searchWords(updatedTreeB, 2, "wo") // => ["word", work"]
  * searchWords(updatedTreeB, 1, "more") // => ["core"]
  */
-const R = require("ramda");
+const { isEmpty, reduce, values } = require("ramda");
 
 const { levenshtein } = require("./levenshtein");
 
@@ -87,8 +87,8 @@ const allWords = (root) => {
     if (isLeaf(node)) {
       return words.concat(node.word);
     } else {
-      return R.reduce(buildList, words.concat(node.word),
-                      R.values(node.children));
+      return reduce(buildList, words.concat(node.word),
+                    values(node.children));
     }
   };
 
@@ -130,7 +130,7 @@ const searchWords = (tree, threshold, word) => {
   return found;
 };
 
-const isLeaf = (node) => R.isEmpty(node.children);
+const isLeaf = (node) => isEmpty(node.children);
 
 module.exports = {
   allWords,
