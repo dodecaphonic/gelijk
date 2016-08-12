@@ -1,5 +1,5 @@
 /**
- * A Burkhard-Teller tree is a data structure that allows for fast
+ * A Burkhard-Keller tree is a data structure that allows for fast
  * searching of proximate strings, using the edit distance between its
  * nodes as the branching criterion. A best-case search should take
  * O(lg n) time, but lower thresholds (that is, maximum edit
@@ -19,12 +19,10 @@
  * searchWords(updatedTreeB, 2, "wo") // => ["word", work"]
  * searchWords(updatedTreeB, 1, "more") // => ["core"]
  */
-const R = require("ramda");
+const { isEmpty, reduce, values } = require("ramda");
 
 const { levenshtein } = require("./levenshtein");
 
-
-const children_ = R.lensProp("children");
 
 /**
  * Creates a new BK Tree.
@@ -56,11 +54,14 @@ const addWord = (root, word) => {
       return node;
     }
 
-    if (R.has(dist, node.children)) {
+    if (node.children[dist] != null) {
       const child = node.children[dist];
-      const updated = R.merge(node.children, { [dist]: go(child) });
 
-      return R.set(children_, updated, node);
+      return Object.assign({}, node, {
+        children: Object.assign({}, node.children, {
+          [dist]: go(child)
+        })
+      });
     } else {
       return addChild(node, normalizedWord, dist);
     }
@@ -70,9 +71,9 @@ const addWord = (root, word) => {
 };
 
 const addChild = (node, word, dist) => (
-  R.set(children_,
-        R.merge({ [dist]: createTree(word) }, node.children),
-        node)
+  Object.assign({}, node, {
+    children: Object.assign({}, node.children, { [dist]: createTree(word) })
+  })
 );
 
 /**
@@ -86,15 +87,13 @@ const allWords = (root) => {
     if (isLeaf(node)) {
       return words.concat(node.word);
     } else {
-      return R.reduce(buildList, words.concat(node.word),
-                      R.values(node.children));
+      return reduce(buildList, words.concat(node.word),
+                    values(node.children));
     }
   };
 
   return buildList([], root);
 };
-
-const second = R.view(R.lensIndex(1));
 
 /**
  * Searches for words matching a reference word, with the expectation
@@ -105,33 +104,33 @@ const second = R.view(R.lensIndex(1));
  * @param {string} word - the word one is searching for
  * @return {Array.<string>} all words matching the criteria
  */
-const searchWords = R.curry((tree, threshold, word) => {
+const searchWords = (tree, threshold, word) => {
   const normalizedWord = word.toLowerCase();
+  const found = [];
 
-  const reducer = (found, node) => {
+  const reducer = (node) => {
     const dist = levenshtein(node.word, normalizedWord);
-    const updated = dist <= threshold ? found.concat(node.word) : found;
 
-    if (isLeaf(node)) {
-      return updated;
-    } else {
-      const minDist = dist - threshold;
-      const maxDist = dist + threshold;
-      const findChildren = ([d, n_]) => d >= minDist && d <= maxDist;
+    if (dist <= threshold) {
+      found.push(node.word);
+    }
 
-      const childrenWithinThreshold = R.compose(R.map(second),
-                                                R.filter(findChildren),
-                                                R.toPairs,
-                                                R.view(children_))(node);
+    const minDist = dist - threshold;
+    const maxDist = dist + threshold;
 
-      return R.reduce(reducer, updated, childrenWithinThreshold);
+    for (let d = minDist; d <= maxDist; d++) {
+      if (node.children[d] != null) {
+        reducer(node.children[d]);
+      }
     }
   };
 
-  return reducer([], tree);
-});
+  reducer(tree);
 
-const isLeaf = (node) => node.children.size === 0;
+  return found;
+};
+
+const isLeaf = (node) => isEmpty(node.children);
 
 module.exports = {
   allWords,
