@@ -4,42 +4,58 @@ const { levenshtein } = require("./levenshtein");
 
 const children_ = R.lensProp("children");
 
-const create = (word) => {
+const createTree = (word) => {
   return {
     word: word.toLowerCase(),
     children: {}
   };
 };
 
-const add = (root, word) => {
+const addWord = (root, word) => {
   const normalizedWord = word.toLowerCase();
 
-  let node = root;
-  let dist = levenshtein(node.word, normalizedWord);
+  const go = (node) => {
+    let dist = levenshtein(node.word, normalizedWord);
 
-  while (contains(node, dist)) {
     if (dist === 0) {
       return node;
     }
 
-    node = node.children[dist];
-    dist = levenshtein(node.word, normalizedWord);
-  }
+    if (R.has(dist, node.children)) {
+      const child = node.children[dist];
+      const updated = R.merge(node.children, { [dist]: go(child) });
 
-  return addChild(node, normalizedWord, dist);
+      return R.set(children_, updated, node);
+    } else {
+      return addChild(node, normalizedWord, dist);
+    }
+  };
+
+  return go(root);
 };
 
 const addChild = (node, word, dist) => (
   R.set(children_,
-        R.merge({ [dist]: create(word) }, node.children),
+        R.merge({ [dist]: createTree(word) }, node.children),
         node)
 );
 
-const contains = (node, edgeDist) => R.has(edgeDist, node);
+const allWords = (tree) => {
+  const buildList = (words, node) => {
+    if (isLeaf(node)) {
+      return words.concat(node.word);
+    } else {
+      return R.reduce(buildList, words.concat(node.word),
+                      R.values(node.children));
+    }
+  };
+
+  return buildList([], tree);
+};
 
 const second = R.view(R.lensIndex(1));
 
-const search = (tree, threshold, word) => {
+const searchWords = (tree, threshold, word) => {
   const normalizedWord = word.toLowerCase();
 
   const go = (found, node) => {
@@ -68,7 +84,8 @@ const search = (tree, threshold, word) => {
 const isLeaf = (node) => node.children.size === 0;
 
 module.exports = {
-  create,
-  add,
-  search
+  allWords,
+  createTree,
+  addWord,
+  searchWords
 };
