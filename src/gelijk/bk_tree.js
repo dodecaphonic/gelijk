@@ -107,31 +107,31 @@ const second = R.view(R.lensIndex(1));
  */
 const searchWords = R.curry((tree, threshold, word) => {
   const normalizedWord = word.toLowerCase();
+  const found = [];
 
-  const reducer = (found, node) => {
+  const reducer = (node) => {
     const dist = levenshtein(node.word, normalizedWord);
-    const updated = dist <= threshold ? found.concat(node.word) : found;
 
-    if (isLeaf(node)) {
-      return updated;
-    } else {
-      const minDist = dist - threshold;
-      const maxDist = dist + threshold;
-      const findChildren = ([d, n_]) => d >= minDist && d <= maxDist;
+    if (dist <= threshold) {
+      found.push(node.word);
+    }
 
-      const childrenWithinThreshold = R.compose(R.map(second),
-                                                R.filter(findChildren),
-                                                R.toPairs,
-                                                R.view(children_))(node);
+    const minDist = dist - threshold;
+    const maxDist = dist + threshold;
 
-      return R.reduce(reducer, updated, childrenWithinThreshold);
+    for (let d = minDist; d <= maxDist; d++) {
+      if (node.children[d] != null) {
+        reducer(node.children[d]);
+      }
     }
   };
 
-  return reducer([], tree);
+  reducer(tree);
+
+  return found;
 });
 
-const isLeaf = (node) => node.children.size === 0;
+const isLeaf = (node) => R.isEmpty(node.children);
 
 module.exports = {
   allWords,
