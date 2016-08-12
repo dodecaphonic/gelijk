@@ -11,31 +11,50 @@ const createTree = (set) => (
            T.createTree(set[0]), R.drop(1, set))
 );
 
-const order = R.sort((a, b) => a > b);
+const order = R.sort((a, b) => {
+  const na = a.toLowerCase();
+  const nb = b.toLowerCase();
+
+  if (na < nb) {
+    return -1;
+  } else if (na > nb) {
+    return 1;
+  }
+
+  return 0;
+});
 
 const allSimilar = R.curry((ref, words, threshold) => (
   R.filter((word) => areSimilar(ref, word, threshold), words)
 ));
 
-describe("A Burkhard-Teller Tree", () => {
-  const set = ["word", "wore", "cord", "wordy", "wordsmith", "reword"];
-  const word = "worc";
+const treeArbitrary = jsc.nearray(jsc.nestring)
+        .smap(createTree, T.allWords);
 
-  it("searching words matching specified criteria", () => {
-    const tree = createTree(set);
+describe("A Burkhard-Teller Tree", () => {
+  jsc.property("keeps every word that's inserted", treeArbitrary, "nearray nestring", (tree, words) => {
+    const originalWords = T.allWords(tree);
+    const updatedTree = R.reduce(T.addWord, tree, words);
+    const expectedSet = R.uniq(R.map(R.toLower, originalWords.concat(words)));
+    const addedWords = T.allWords(updatedTree);
+
+    return R.equals(order(expectedSet), order(addedWords));
+  });
+
+  jsc.property("yields the same results as the brute-force approach", treeArbitrary, "nestring", (tree, refWord) => {
+    const word = refWord.toLowerCase();
+    const set = T.allWords(tree);
     const search = R.compose(order, (t) => T.searchWords(tree, t, word));
     const sim = R.compose(order, allSimilar(word, set));
 
-    assert(R.equals(sim(1), search(1)));
-    assert(R.equals(sim(2), search(2)));
-    assert(R.equals(sim(10), search(10)));
-    assert(R.equals([], search(0)));
+    return R.equals(sim(1), search(1)) &&
+      R.equals(sim(2), search(2)) &&
+      R.equals(sim(10), search(10)) &&
+      R.equals([], search(0));
   });
 
-  it("keeps every unique value that is inserted", () => {
+  jsc.property("doesn't insert the same word twice", "nearray nestring", (set) => {
     const tree = createTree(set.concat(set));
-
-    assert(R.equals(order(set), order(T.allWords(tree))),
-          `expected (${order(set).join(", ")}), was (${order(T.allWords(tree)).join(", ")})`);
+    return R.equals(order(R.uniq(R.map(R.toLower, set))), order(T.allWords(tree)));
   });
 });

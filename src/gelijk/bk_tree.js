@@ -55,10 +55,10 @@ const allWords = (tree) => {
 
 const second = R.view(R.lensIndex(1));
 
-const searchWords = (tree, threshold, word) => {
+const searchWords = R.curry((tree, threshold, word) => {
   const normalizedWord = word.toLowerCase();
 
-  const go = (found, node) => {
+  const reducer = (found, node) => {
     const dist = levenshtein(node.word, normalizedWord);
     const updated = dist <= threshold ? found.concat(node.word) : found;
 
@@ -74,12 +74,12 @@ const searchWords = (tree, threshold, word) => {
                                                 R.toPairs,
                                                 R.view(children_))(node);
 
-      return R.reduce(go, updated, childrenWithinThreshold);
+      return R.reduce(reducer, updated, childrenWithinThreshold);
     }
   };
 
-  return go([], tree);
-};
+  return reducer([], tree);
+});
 
 const isLeaf = (node) => node.children.size === 0;
 
