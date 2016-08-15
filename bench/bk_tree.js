@@ -4,13 +4,13 @@ const path = require("path");
 const R = require("ramda");
 
 const T = require("../src/gelijk/bk_tree");
-const areSimilar = require("../src/gelijk/similar");
+const areSimilar = require("../test/helpers/similar");
 
 
 const WORDS_PATH = path.join(__dirname, "..", "data", "words");
 
 console.log("Reading words...");
-const words = R.take(1000, fs.readFileSync(WORDS_PATH).toString().split("\n"));
+const words = R.take(10000, fs.readFileSync(WORDS_PATH).toString().split("\n"));
 
 console.log(`Building tree (${words.length} words)...`);
 const tree = R.reduce(T.addWord, T.createTree(words[Math.floor(words.length / 2)]), words);

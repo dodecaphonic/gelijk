@@ -12,10 +12,10 @@ const levenshtein = (wordA, wordB) => {
   if (wordA === "") return wordB.length;
   if (wordB === "") return wordA.length;
 
-  const distA = [];
-  const distB = [];
+  const distA = new Array(wordB.length + 1);
+  const distB = new Array(wordB.length + 1);
 
-  for (let i = 0; i <= wordB.length + 1; i++) {
+  for (let i = 0; i < distA.length; i++) {
     distA[i] = i;
   }
 

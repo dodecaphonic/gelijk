@@ -1,10 +1,11 @@
 const assert = require("assert");
 const jsc = require("jsverify");
-const { map } = require("ramda");
+const { compose, join, map } = require("ramda");
 
 const areSimilar = require("./similar");
 
-const shiftCharsByOne = map((c) => String.fromCharCode(c.charCodeAt(0) + 1));
+const shiftCharsByOne =
+        compose(join(""), map((c) => String.fromCharCode(c.charCodeAt(0) + 1)));
 
 describe("the similarity between two words", () => {
   jsc.property("is inexistent if the size difference between them is larger than threshold",
