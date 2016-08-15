@@ -1,5 +1,4 @@
 const bodyParser = require("body-parser");
-const Either = require("data.either");
 const { curry } = require("ramda");
 
 const I = require("./index");
