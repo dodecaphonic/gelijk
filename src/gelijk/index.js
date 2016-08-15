@@ -3,8 +3,8 @@ const { compose, filter, isEmpty, not } = require("ramda");
 
 const T = require("./bk_tree");
 
-const removeFile = (path) => new Promise((resolve, reject) => {
-  fs.unlink(path, (err) => {
+const promisify = (fn) => (...args) => new Promise((resolve, reject) => {
+  fn(...args, (err) => {
     if (err) {
       reject(err);
     } else {
@@ -13,15 +13,13 @@ const removeFile = (path) => new Promise((resolve, reject) => {
   });
 });
 
-const appendWord = (path, newWord) => new Promise((resolve, reject) => {
-  fs.appendFile(path, `${newWord}\n`, "utf-8", (err) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(newWord);
-    }
-  });
-});
+const removeFile = promisify(fs.unlink);
+const appendFile = promisify(fs.appendFile);
+
+const appendWord = (path, newWord) => (
+  appendFile(path, `${newWord}\n`, "utf-8")
+    .then(() => newWord)
+);
 
 const loadFromDisk = (storagePath) => {
   if (!fs.existsSync(storagePath)) {
@@ -119,11 +117,12 @@ const searchKeywords = (index, word, threshold) => {
  * @param {Object} index - an index
  * @return {Promise.<Object>} a database IO action return the updated index
  */
-const clearKeywords = (index) => removeFile(index.storagePath).then(() => {
-  index.keywords = null;
-
-  return index;
-});
+const clearKeywords = (index) => (
+  removeFile(index.storagePath).then(() => {
+    index.keywords = null;
+    return index;
+  })
+);
 
 module.exports = {
   createIndex,
