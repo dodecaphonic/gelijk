@@ -8,8 +8,9 @@
   },
   "scripts": {
     "test": "mocha --recursive",
+    "watch-test": "gulp watch-test",
     "bench": "node bench/bk_tree.js",
-    "server": "node src/index.js"
+    "start": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
