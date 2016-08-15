@@ -3,6 +3,16 @@ const { compose, filter, isEmpty, not } = require("ramda");
 
 const T = require("./bk_tree");
 
+const removeFile = (path) => new Promise((resolve, reject) => {
+  fs.unlink(path, (err) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve();
+    }
+  });
+});
+
 const appendWord = (path, newWord) => new Promise((resolve, reject) => {
   fs.appendFile(path, `${newWord}\n`, "utf-8", (err) => {
     if (err) {
@@ -28,6 +38,12 @@ const loadFromDisk = (storagePath) => {
   }
 };
 
+/**
+ * Creates a new Index, loading stored words from disk if any present.
+ *
+ * @param {string} storagePath - The path in which the Index's db is stored
+ * @return {Object} an Index
+ */
 const createIndex = (storagePath) => {
   return {
     keywords: loadFromDisk(storagePath),
@@ -35,6 +51,12 @@ const createIndex = (storagePath) => {
   };
 };
 
+/**
+ * Fetches every keyword in the index.
+ *
+ * @param {Object} index - an Index
+ * @return {Array.<string>} a list of keywords
+ */
 const allKeywords = (index) => {
   if (index.keywords == null) {
     return [];
@@ -43,6 +65,14 @@ const allKeywords = (index) => {
   return T.allWords(index.keywords);
 };
 
+/**
+ * Adds a new keyword to the index, storing it both in the in-memory
+ * tree and the database.
+ *
+ * @param {Object} index - an Index
+ * @param {string} word - a keyword
+ * @return {Promise.<string>} a database IO action
+ */
 const addKeyword = (index, word) => {
   if (word == null || word === "") {
     return Promise.reject("You must specify a word to add to the keywords");
@@ -62,7 +92,16 @@ const addKeyword = (index, word) => {
   return shouldAppend ? appendWord(index.storagePath, word) : Promise.resolve(word);
 };
 
-const searchKeywords = (index, { word, threshold }) => {
+/**
+ * Searches the index for keywords within _threshold_ distance of
+ * another word.
+ *
+ * @param {Object} index - an Index
+ * @param {string} word - a reference word
+ * @param {number} threshold - a threshold
+ * @return {Array.<string>} words within _threshold_ of _word_
+ */
+const searchKeywords = (index, word, threshold) => {
   if (index.keywords == null) {
     return Promise.resolve([]);
   } else if (word == null || word === "") {
@@ -74,9 +113,17 @@ const searchKeywords = (index, { word, threshold }) => {
   }
 };
 
-const clearKeywords = (index) => {
+/**
+ * Clears the index, truncating the database.
+ *
+ * @param {Object} index - an index
+ * @return {Promise.<Object>} a database IO action return the updated index
+ */
+const clearKeywords = (index) => removeFile(index.storagePath).then(() => {
   index.keywords = null;
-};
+
+  return index;
+});
 
 module.exports = {
   createIndex,

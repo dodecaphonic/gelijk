@@ -52,7 +52,10 @@ describe("the JSON API", () => {
 
   after(() => {
     setTimeout(() => app.close(), 1000);
-    fs.unlinkSync(indexStoragePath);
+
+    if (fs.existsSync(indexStoragePath)) {
+      fs.unlinkSync(indexStoragePath);
+    }
   });
 
   it("allows words to be added to the index", () => (

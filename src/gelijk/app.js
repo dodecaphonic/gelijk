@@ -26,13 +26,15 @@ const createServer = ({ port, afterStart, indexStoragePath } = {}) => {
   app.get("/keywords", (req, res) => serialize(res, I.allKeywords(index)));
 
   app.delete("/keywords", (req, res) => {
-    I.clearKeywords(index);
-
-    res.send({ cleared: true });
+    I.clearKeywords(index)
+      .then(() => serialize(res)({ cleared: true }),
+            () => serialize(res)({ cleared: false }));
   });
 
   app.get("/keywords/search", (req, res) => {
-    I.searchKeywords(index, req.body).then(serialize(res), onError(res));
+    const { word, threshold } = req.body;
+
+    I.searchKeywords(index, word, threshold).then(serialize(res), onError(res));
   });
 
   app.post("/keywords", (req, res) => {
