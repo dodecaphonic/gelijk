@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bench": "node bench/bk_tree.js"
+    "bench": "node bench/bk_tree.js",
+    "server": "node src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,9 @@
     "mocha": "^3.0.2"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "data.either": "^1.4.0",
+    "express": "^4.14.0",
     "ramda": "^0.22.1"
   }
 }
