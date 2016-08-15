@@ -19,7 +19,7 @@
  * searchWords(updatedTreeB, 2, "wo") // => ["word", work"]
  * searchWords(updatedTreeB, 1, "more") // => ["core"]
  */
-const { isEmpty, reduce, values } = require("ramda");
+const { isEmpty, drop, reduce, values } = require("ramda");
 
 const levenshtein = require("./levenshtein");
 
@@ -36,6 +36,11 @@ const createTree = (word) => {
     children: {}
   };
 };
+
+const createTreeFromSet = (set) => (
+  reduce((tree, word) => addWord(tree, word),
+         createTree(set[0]), drop(1, set))
+);
 
 /**
  * Adds a word to the BK Tree.
@@ -135,6 +140,7 @@ const isLeaf = (node) => isEmpty(node.children);
 module.exports = {
   allWords,
   createTree,
+  createTreeFromSet,
   addWord,
   searchWords
 };
