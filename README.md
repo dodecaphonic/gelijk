@@ -39,7 +39,7 @@ The API both receives and returns JSON payloads. You should set the `Content-Typ
 
 A User should pass in a payload **as the request body** in the following format:
 
-    { word: "wordelicious" }
+    { word: <string> }
      
 An example `curl` call looks like this:
 
@@ -52,6 +52,10 @@ An example `curl` call looks like this:
     ["wordelicious"]
     
 #### Searching keywords
+
+A User should pass in a payload **as the request body** in the following format:
+
+    { word: <string>, threshold: <optional: number> }
 
     $ curl -XGET -H "Content-Type: application/json" -d '{ "word": "word", "threshold": 10 }' http://localhost:8128/keywords/search
     ["wordelicious"]
