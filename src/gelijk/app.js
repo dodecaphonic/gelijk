@@ -3,7 +3,15 @@ const Either = require("data.either");
 
 const T = require("./bk_tree");
 
-const createServer = ({ port, afterStart }) => {
+/**
+ * Creates a new instance of Gelijk.
+ *
+ * @param {number} options.port - the port to which it will bind
+ * @param {function} options.afterStart - a function to call when the
+ *   server has started
+ * @return {Object} a running instance of Gelijk
+ */
+const createServer = ({ port, afterStart } = {}) => {
   const app = require("express")();
 
   let keywords;
