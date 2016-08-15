@@ -24,7 +24,8 @@ const levenshtein = (wordA, wordB) => {
 
     for (let j = 0; j < wordB.length; j++) {
       const cost = wordA[i] === wordB[j] ? 0 : 1;
-      distB[j + 1] = Math.min(distB[j] + 1, distA[j + 1] + 1, distA[j] + cost);
+      distB[j + 1] = Math.min(distB[j] + 1,
+                              Math.min(distA[j + 1] + 1, distA[j] + cost));
     }
 
     for (let j = 0; j < distA.length; j++) {
