@@ -23,7 +23,9 @@ const createServer = ({ port, afterStart, indexStoragePath } = {}) => {
 
   app.use(bodyParser.json());
 
-  app.get("/keywords", (req, res) => serialize(res, I.allKeywords(index)));
+  app.get("/keywords", (req, res) => (
+    I.allKeywords(index).then(serialize(res), onError(res))
+  ));
 
   app.delete("/keywords", (req, res) => {
     I.clearKeywords(index)

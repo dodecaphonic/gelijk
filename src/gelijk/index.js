@@ -15,8 +15,8 @@
  * const index = I.createIndex("/path/to/storage.db");
  * I.addKeyword(index, "functional").then((w) => ...) // => Promise
  * I.addKeyword(index, "programming").then((w) => ...) // => Promise
- * I.searchWords(index, "fun", 10) // => ["functional"]
- * I.allKeywords() // => ["functional", "programming"]
+ * I.searchWords(index, "fun", 10) // => Promise
+ * I.allKeywords() // => Promise
  */
 const fs = require("fs");
 const { compose, filter, isEmpty, not } = require("ramda");
@@ -73,14 +73,14 @@ const createIndex = (storagePath) => {
  * Fetches every keyword in the index.
  *
  * @param {Object} index - an Index
- * @return {Array.<string>} a list of keywords
+ * @return {Promise.<Array.<string>>} a list of keywords
  */
 const allKeywords = (index) => {
   if (index.keywords == null) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  return T.allWords(index.keywords);
+  return Promise.resolve(T.allWords(index.keywords));
 };
 
 /**
@@ -117,7 +117,7 @@ const addKeyword = (index, word) => {
  * @param {Object} index - an Index
  * @param {string} word - a reference word
  * @param {number} threshold - a threshold
- * @return {Array.<string>} words within _threshold_ of _word_
+ * @return {Promise.<Array.<string>>} words within _threshold_ of _word_
  */
 const searchKeywords = (index, word, threshold) => {
   if (index.keywords == null) {
