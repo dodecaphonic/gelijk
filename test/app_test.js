@@ -1,6 +1,8 @@
 const assert = require("assert");
 const request = require("superagent");
+const tempfile = require("tempfile");
 const { equals, map } = require("ramda");
+const fs = require("fs");
 
 const createServer = require("../src/gelijk/app");
 const order = require("./helpers/order");
@@ -35,14 +37,22 @@ const searchWord = (word, threshold) => (
 
 describe("the JSON API", () => {
   let app;
+  let indexStoragePath;
+
   const words = ["work", "wore", "core", "cork", "more", "ore", "or"];
 
   before(() => {
-    app = createServer({ port: TEST_PORT });
+    indexStoragePath = tempfile(".db");
+
+    app = createServer({
+      port: TEST_PORT,
+      indexStoragePath
+    });
   });
 
   after(() => {
     setTimeout(() => app.close(), 1000);
+    fs.unlinkSync(indexStoragePath);
   });
 
   it("allows words to be added to the index", () => (
