@@ -1,3 +1,23 @@
+/**
+ * An Index unifies storage and usages of the BK tree under a single
+ * interface. It uses a flat utf-8 text file as a storage mechanism,
+ * using simple append operations as a way of growing it.
+ *
+ * Since it is expected that Index is used in mutable contexts only
+ * (i.e. a User wants both the fast searches AND the storage) and
+ * there's no nice way to bubble that up and down using a StateT from
+ * Express.js to the filesystem and back, a Promise is returned
+ * whenever a mutation happens, to signal both the potential async
+ * operation and the fact it changes the world around it.
+ *
+ * @example
+ * const I = require("index");
+ * const index = I.createIndex("/path/to/storage.db");
+ * I.addKeyword(index, "functional").then((w) => ...) // => Promise
+ * I.addKeyword(index, "programming").then((w) => ...) // => Promise
+ * I.searchWords(index, "fun", 10) // => ["functional"]
+ * I.allKeywords() // => ["functional", "programming"]
+ */
 const fs = require("fs");
 const { compose, filter, isEmpty, not } = require("ramda");
 
