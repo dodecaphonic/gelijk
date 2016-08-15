@@ -25,11 +25,11 @@ By default, keywords added via the API are stored in `<project root>/db/index.db
 The API offers two endpoints, which in turn describe four different operations. They are as follows:
 
 - `/keywords`:
-  - `GET`: returns a list of keywords as a JSON array
-  - `POST`: adds a new keyword to the set
-  - `DELETE`: clears the set of stored keywords
+    - `GET`: returns a list of keywords as a JSON array
+    - `POST`: adds a new keyword to the set
+    - `DELETE`: clears the set of stored keywords
 - `/keywords/search`:
-  - `GET`: returns a list of keywords matching a reference word. If a threshold number for the maximum edit distance is passed, it uses that; otherwise, it defaults to `3`.
+    - `GET`: returns a list of keywords matching a reference word. If a threshold number for the maximum edit distance is passed, it uses that; otherwise, it defaults to `3`.
   
 ### Usage
 
