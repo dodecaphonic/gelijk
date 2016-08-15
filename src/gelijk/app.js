@@ -3,7 +3,7 @@ const Either = require("data.either");
 
 const T = require("./bk_tree");
 
-const createServer = ({ port }) => {
+const createServer = ({ port, afterStart }) => {
   const app = require("express")();
 
   let keywords;
@@ -38,8 +38,8 @@ const createServer = ({ port }) => {
     keywords = null;
   };
 
-  const identity = (res) => (v) => res.send(JSON.stringify(v));
-  const wordAdded = (res) => (word) => res.send(JSON.stringify({ word, added: true }));
+  const serialize = (res) => (v) => res.send(JSON.stringify(v));
+  const wordAdded = (res) => (word) => serialize(res)({ word, added: true });
   const onError = (res) => (err) => res.status(400).send(err);
 
   app.use(bodyParser.json());
@@ -55,16 +55,14 @@ const createServer = ({ port }) => {
   });
 
   app.get("/keywords/search", (req, res) => {
-    searchWords(req.body).fold(onError(res), identity(res));
+    searchWords(req.body).fold(onError(res), serialize(res));
   });
 
   app.post("/keywords", (req, res) => (
     addNewWord(req.body).fold(onError(res), wordAdded(res))
   ));
 
-  return app.listen(port, () => {
-    console.log("Gelijk running on port 8128");
-  });
+  return app.listen(port, (afterStart || (() => {}))());
 };
 
 module.exports = createServer;

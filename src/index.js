@@ -2,4 +2,11 @@ const process = require("process");
 
 const createServer = require("./gelijk/app");
 
-createServer({ port: process.env.PORT || 8128 });
+const port = process.env.PORT || 8128;
+
+createServer({
+  port,
+  afterStart: () => {
+    console.log(`Gelijk running on port ${port}`);
+  }
+});
