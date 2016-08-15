@@ -24,7 +24,8 @@
     "gulp-mocha": "^3.0.0",
     "jsdoc": "^3.4.0",
     "jsverify": "^0.7.1",
-    "mocha": "^3.0.2"
+    "mocha": "^3.0.2",
+    "superagent": "^2.2.0"
   },
   "dependencies": {
     "body-parser": "^1.15.2",

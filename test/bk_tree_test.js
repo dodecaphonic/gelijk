@@ -4,25 +4,13 @@ const R = require("ramda");
 
 const T = require("../src/gelijk/bk_tree");
 const areSimilar = require("./helpers/similar");
+const order = require("./helpers/order");
 const searchSimilarInSet = require("./helpers/search_similar");
 
 const createTree = (set) => (
   R.reduce((tree, word) => T.addWord(tree, word),
            T.createTree(set[0]), R.drop(1, set))
 );
-
-const order = R.sort((a, b) => {
-  const na = a.toLowerCase();
-  const nb = b.toLowerCase();
-
-  if (na < nb) {
-    return -1;
-  } else if (na > nb) {
-    return 1;
-  }
-
-  return 0;
-});
 
 const allSimilar = R.curry((ref, words, threshold) => (
   R.filter((word) => areSimilar(ref, word, threshold), words)
