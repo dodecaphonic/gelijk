@@ -1,5 +1,7 @@
 # gelijk
 
+[![CircleCI](https://circleci.com/bb/dodecaphonic/gelijk.svg?style=svg)](https://circleci.com/bb/dodecaphonic/gelijk)
+
 Gelijk (Dutch for 'equal' or 'equivalent') is an award-winning, world-class keyword search engine that allows you to spell like a mumbling drunkard and still get everything you want.
 
 ## Running
