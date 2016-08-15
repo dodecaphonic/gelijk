@@ -1,7 +1,8 @@
 const assert = require("assert");
 const jsc = require("jsverify");
 
-const Lev = require("../src/gelijk/levenshtein");
+const levenshtein = require("../src/gelijk/levenshtein");
+const naiveLevenshtein = require("./helpers/levenshtein");
 
 const suite = (distance) => {
   return () => {
@@ -37,11 +38,11 @@ const suite = (distance) => {
 
 describe("The distance between two Strings", () => {
   describe("determined using the recursive Levenshtein implementation",
-           suite(Lev.naiveLevenshtein));
+           suite(naiveLevenshtein));
 
-  describe("determined using dynamic programming", suite(Lev.levenshtein));
+  describe("determined using dynamic programming", suite(levenshtein));
 
   jsc.property("is consistent between the naive and the fast implementations",
                "string", "string",
-               (a, b) => Lev.levenshtein(a, b) === Lev.naiveLevenshtein(a, b));
+               (a, b) => levenshtein(a, b) === naiveLevenshtein(a, b));
 });

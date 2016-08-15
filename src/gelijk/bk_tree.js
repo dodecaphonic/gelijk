@@ -21,7 +21,7 @@
  */
 const { isEmpty, reduce, values } = require("ramda");
 
-const { levenshtein } = require("./levenshtein");
+const levenshtein = require("./levenshtein");
 
 
 /**

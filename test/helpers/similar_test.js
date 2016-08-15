@@ -2,7 +2,7 @@ const assert = require("assert");
 const jsc = require("jsverify");
 const { map } = require("ramda");
 
-const areSimilar = require("../src/gelijk/similar");
+const areSimilar = require("./similar");
 
 const shiftCharsByOne = map((c) => String.fromCharCode(c.charCodeAt(0) + 1));
 

@@ -3,8 +3,8 @@ const jsc = require("jsverify");
 const R = require("ramda");
 
 const T = require("../src/gelijk/bk_tree");
-const areSimilar = require("../src/gelijk/similar");
-const searchSimilarInSet = require("../src/gelijk/search_similar");
+const areSimilar = require("./helpers/similar");
+const searchSimilarInSet = require("./helpers/search_similar");
 
 const createTree = (set) => (
   R.reduce((tree, word) => T.addWord(tree, word),

@@ -1,6 +1,6 @@
 const { isEmpty } = require("ramda");
 
-const { levenshtein } = require("./levenshtein");
+const levenshtein = require("../../src/gelijk/levenshtein");
 
 /**
  * Determines if two words are similar, allowing differences of at

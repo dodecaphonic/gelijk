@@ -2,7 +2,7 @@ const assert = require("assert");
 const jsc = require("jsverify");
 const { equals } = require("ramda");
 
-const searchSimilarInSet = require("../src/gelijk/search_similar");
+const searchSimilarInSet = require("./search_similar");
 
 describe("searching words matching specified criteria", () => {
   it("is affected by the threshold", () => {
