@@ -20,6 +20,17 @@ This will start the server on port 8128 by default. If you wish to change it, us
      
 By default, keywords added via the API are stored in `<project root>/db/index.db`.
 
+### Client run
+
+This repository includes a runner that instantiates a server and, as a client, does the following:
+
+  - Adds 10,000 keywords;
+  - Checks that every single one of them is there;
+  - Searches every word with an increasing threshold value (0..3);
+  - Checks that, for every word, increasing the threshold widens the results
+
+Run it with `npm run client`. It will take a while, since client and server are running in the same process in a non-parallel runtime, but (here's hoping!) the checks will hold.
+
 ## API
 
 The API offers two endpoints, which in turn describe four different operations. They are as follows:
