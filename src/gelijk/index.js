@@ -19,6 +19,7 @@
  * I.allKeywords() // => Promise
  */
 const fs = require("fs");
+const { TaskQueue } = require("cwait");
 const { compose, filter, isEmpty, not } = require("ramda");
 
 const T = require("./bk_tree");
@@ -56,6 +57,8 @@ const loadFromDisk = (storagePath) => {
   }
 };
 
+const queue = new TaskQueue(Promise, 50);
+
 /**
  * Creates a new Index, loading stored words from disk if any present.
  *
@@ -91,7 +94,7 @@ const allKeywords = (index) => {
  * @param {string} word - a keyword
  * @return {Promise.<string>} a database IO action
  */
-const addKeyword = (index, word) => {
+const addKeyword = queue.wrap((index, word) => {
   if (word == null || word === "") {
     return Promise.reject("You must specify a word to add to the keywords");
   }
@@ -108,7 +111,7 @@ const addKeyword = (index, word) => {
   }
 
   return shouldAppend ? appendWord(index.storagePath, word) : Promise.resolve(word);
-};
+});
 
 /**
  * Searches the index for keywords within _threshold_ distance of
@@ -137,12 +140,12 @@ const searchKeywords = (index, word, threshold) => {
  * @param {Object} index - an index
  * @return {Promise.<Object>} a database IO action return the updated index
  */
-const clearKeywords = (index) => (
+const clearKeywords = queue.wrap((index) => (
   removeFile(index.storagePath).then(() => {
     index.keywords = null;
     return index;
   })
-);
+));
 
 module.exports = {
   createIndex,
