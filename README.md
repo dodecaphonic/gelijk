@@ -43,7 +43,7 @@ A User should pass in a payload **as the request body** in the following format:
      
 An example `curl` call looks like this:
 
-    $ curl -XPOST -H "Content-Type: application/json" -d '{ "word": "wordelicious" }" http://localhost:8128/keywords
+    $ curl -XPOST -H "Content-Type: application/json" -d '{ "word": "wordelicious" }' http://localhost:8128/keywords
     {"word":"wordelicious","added":true}
     
 #### Listing all keywords
