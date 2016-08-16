@@ -10,5 +10,6 @@ createServer({
   indexStoragePath: path.join(__dirname, "..", "db", "index.db"),
   afterStart: () => {
     console.log(`Gelijk running on port ${port}`);
-  }
+  },
+  useLog: true
 });

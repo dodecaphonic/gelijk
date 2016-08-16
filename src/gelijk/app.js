@@ -1,5 +1,6 @@
 const bodyParser = require("body-parser");
 const { curry } = require("ramda");
+const morgan = require("morgan");
 
 const I = require("./index");
 
@@ -11,7 +12,7 @@ const I = require("./index");
  *   server has started
  * @return {Object} a running instance of Gelijk
  */
-const createServer = ({ port, afterStart, indexStoragePath } = {}) => {
+const createServer = ({ port, afterStart, indexStoragePath, useLog } = {}) => {
   const app = require("express")();
 
   const serialize = curry((res, v) => res.send(JSON.stringify(v)));
@@ -19,6 +20,10 @@ const createServer = ({ port, afterStart, indexStoragePath } = {}) => {
   const onError = curry((res, err) => res.status(400).send(err));
 
   const index = I.createIndex(indexStoragePath);
+
+  if (useLog) {
+    app.use(morgan("combined"));
+  }
 
   app.use(bodyParser.json());
 
