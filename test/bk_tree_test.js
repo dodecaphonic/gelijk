@@ -18,7 +18,7 @@ describe("A Burkhard-Keller Tree", () => {
   jsc.property("keeps every word that's inserted", treeArbitrary, "nearray nestring", (tree, words) => {
     const originalWords = T.allWords(tree);
     const updatedTree = R.reduce(T.addWord, tree, words);
-    const expectedSet = R.uniq(R.map(R.toLower, originalWords.concat(words)));
+    const expectedSet = R.pipe(R.map(R.toLower), R.uniq)(originalWords.concat(words));
     const addedWords = T.allWords(updatedTree);
 
     return R.equals(order(expectedSet), order(addedWords));
