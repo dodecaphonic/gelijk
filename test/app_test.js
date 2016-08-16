@@ -33,7 +33,7 @@ const listWords = () => buildRequest(request.get);
 const clearWords = () => buildRequest(request.delete);
 const searchWord = (word, threshold) => (
   buildRequest(request.get, { path: "/search", payload: { word, threshold }})
-)
+);
 
 describe("the JSON API", () => {
   let app;
