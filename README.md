@@ -6,7 +6,7 @@ Gelijk (Dutch for 'equal' or 'equivalent') is an award-winning, world-class keyw
 
 ## Running
 
-Gelijk is written in node.js, and requires version >= 6.2.1. If you don't have node, please [get it][nodejs] for your platform and make sure `node` and `npm` are in your `PATH`.
+Gelijk is written in node.js, and requires version >= 6.2.1 (it uses a lot of ES6 features and syntax). If you don't have node, please [get it][nodejs] for your platform and make sure `node` and `npm` are in your `PATH`.
 
 To run gelijk, run the following:
 
@@ -96,7 +96,7 @@ As a design goal, it is written with techniques of functional programming in min
 
 ## Developing
 
-Gelijk is written in node.js, and requires version >= 6.2.1. If you don't have node, please [get it][nodejs].
+Gelijk is written in node.js, and requires version >= 6.2.1.
 
 To work on gelijk, run the following:
 
