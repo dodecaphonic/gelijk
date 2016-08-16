@@ -109,7 +109,7 @@ const main = () => {
   const selectedSet = selectSubset(10000, words);
   const addSelected = R.map(addWord, selectedSet);
 
-  console.log("Here's what I'm gonna do: I will select a subset of a standard Unix `words` file, with about 235k English words, hit the API, and then check the following:");
+  console.log("Here's what I'm gonna do: I will select a subset of a standard Unix `words` file, with about 235k English words and hit the API. I will then check the following:");
   console.log("\n\t- Every word that was sent to the service was added");
   console.log("\t- Widening the search space widens the result set");
   console.log("\nFingers crossed!");
