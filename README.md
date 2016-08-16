@@ -6,7 +6,7 @@ Gelijk (Dutch for 'equal' or 'equivalent') is an award-winning, world-class keyw
 
 ## Running
 
-Gelijk is written in node.js, and requires version >= 6.2.1. If you don't have node, please [get it][nodejs].
+Gelijk is written in node.js, and requires version >= 6.2.1. If you don't have node, please [get it][nodejs] for your platform and make sure `node` and `npm` are in your `PATH`.
 
 To run gelijk, run the following:
 
@@ -75,9 +75,9 @@ Gelijk follows the guidelines established by OLX's challenge proposition, namely
 
 - Implements its own Levenshtein distance algorithm;
 - Implements a web API that allows a User to:
-  - Store a keyword;
-  - Retrieve/show stored keywords;
-  - Retrieve a list of stored keywords matching a reference word, within an edit distance of said reference word.
+    - Store a keyword;
+    - Retrieve/show stored keywords;
+    - Retrieve a list of stored keywords matching a reference word, within an edit distance of said reference word.
 - Includes thorough tests;
 - Follows production-grade quality practices.
 
@@ -95,6 +95,8 @@ To work on gelijk, run the following:
 
 If tests run correctly, you're pretty much set up, as no other dependencies are required.
 
+There's a couple of benchmarks that have been for optimizing the tree and the final levenshtein implementation. They can be run with `npm run bench`. Be mindful of them as you make changes with the goal of improving performance.
+
 ## Testing
 
 There's two ways to run tests:
@@ -104,7 +106,10 @@ There's two ways to run tests:
      
 The first one performs a single run. The second runs all tests as changes are made to files in the project.
 
-A goal of the project is to have as many [property-based tests][proptests] as possible, written with jsverify. If you add functionality, try to think of universal characteristics that describe the code being written and let it generate inputs for you. If you're not familiar with the technique, check out the tests for the BK Tree and the Levenshtein distance implementation.
+A goal of the project is to have as many [property-based tests][proptests] (shameless plug of author's own blog) as possible, written with [jsverify][jsv]. That requires you to think much harder when adding functionality, as you must think of quasi-proofs of the code being written in the form of boolean properties. The test infrastructure will then generate inputs for you to check if they hold.
+
+If you're not familiar with the technique, check out the tests for the BK Tree and the Levenshtein distance implementation.
 
 [nodejs]: https://nodejs.org
-[proptests]: http://blog.jessitron.com/2013/04/property-based-testing-what-is-it.html
+[proptests]: http://www.troikatech.com/blog/2014/04/02/property-based-testing-in-ruby/
+[jsverify]: https://github.com/jsverify/jsverify
